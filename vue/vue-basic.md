@@ -19,7 +19,7 @@
 ### 模板表达式
 
 * 可以用 js 表达式，但只能单个表达式。
-* 模板表达式只能访问全局变量的一个白名单。
+* 模板表达式只能访问全局变量的一个白名单。如 `Math`
 
 ### 动态参数
 
@@ -104,7 +104,9 @@
 ```html
 <input type="radio" v-model="picked" value="a">
 <!-- 选中时 picked 是字符串 a
-想绑定到动态 property 上 需要使用 bind, 这时 value 可以不是字符串。-->
+想绑定到动态 property 上 需要使用 bind, 这时 :value 可以不是字符串。
+选中时 value 为 a，value 为 a 时才被选中。
+-->
 
 <input type="radio" v-model="pick" v-bind:value="a">
 <!-- 选中时 vm.pick === vm.a -->
@@ -122,7 +124,7 @@
 
 #### 自定义事件
 
-* 父组件绑定自定义事件，子组件行内用 `$emit('event-name')`,触发自定义事件。方法里可以用 `this.$emit`
+* 父组件绑定自定义事件`v-on:event-name`，子组件行内用 `$emit('event-name')`,触发自定义事件。方法里可以用 `this.$emit`
 * 子组件 `$emit('enlarge-text,value')` 父组件 `@enlarge-text=“fontSize += $event”`，如果父组件的事件处理函数是方法，值为第一个参数。
 
 #### 自定义组件使用 `v-model`
@@ -166,4 +168,4 @@ Vue.component('custom-input', {
 <component v-bind:is="currentTabComponent"></component>
 ```
 
-* `is` 可以作用于 `html` 元素。 将元素视为组件，所有 attribute 都会作为 DOM attribute 绑定。对于像 value 这样的属性，需要使用 `.prop` 修饰器。
+* `is` 可以作用于 `html` 元素。 但这些元素将被视为组件，这意味着所有 attribute 都会作为 DOM attribute 绑定。对于像 value 这样的属性，需要使用 `.prop` 修饰器。

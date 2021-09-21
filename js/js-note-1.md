@@ -1,5 +1,11 @@
 ## 杂项
 
+## attribute 和 property 的不同
+
+* [difference]:https://stackoverflow.com/questions/6003819/what-is-the-difference-between-properties-and-attributes-in-html#answer-6004028
+
+    
+
 ### isNaN
 
 * 判断一个数 Is Not A Number。
@@ -259,7 +265,7 @@ Array.apply(null, ['a', ,'b'])
 
 * 使用 prototype, 所有实例都能共享。
 
-* 简写方法不能当构造函数使用
+* **简写方法不能当构造函数使用**
 
     ```javascript
     const obj = {
@@ -269,5 +275,3 @@ Array.apply(null, ['a', ,'b'])
     };
     // new obj.f(); 会报错
     ```
-
-    
