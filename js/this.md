@@ -20,7 +20,7 @@ a() // 全局对象
 * 箭头函数的 this 指向定义位置的上下文词法作用域。
 
 ```javascript
-obj = {
+obj = { 
   fn: () => {
 		console.log(this); // 指向全局对象
   }
@@ -29,7 +29,7 @@ obj = {
 
 * 作为对象方法调用指向当前对象。
 
-* 执行 new 操作时，构造函数里的 this 指向正在构造的函数。
+* 执行 new 操作时，构造函数里的 this 指向正在构造的对象。
 * class 中的 this 指向他调用的环境
 
 ```javascript
@@ -48,9 +48,9 @@ let name = 'global'
 function Test () {
   console.log(this, this.name)
 }
-new Test() // let '' var global
+new Test() // Test{} undefined
 
-let c = new MyTest(Test)  //// window 使用let输出 '', 使用var输出global
+let c = new MyTest(Test)  /// window 使用let输出 '', 使用var输出global
 c.func() // MyTest{} undefined
 ```
 
@@ -72,3 +72,22 @@ c.func() // MyTest{} undefined
 ![img](this.assets/bg2018061803.png)
 
 * this 指向当前函数的运行环境。
+
+## 口诀
+
+* 箭头函数、new、bind、apply 和 call、obj.、直接调用、不在函数里。
+
+### 箭头函数
+
+* 创建时确定指向。
+
+### bind
+
+* 多次 bind 只认第一次。
+* 先 bind  后 new。还是 指向 new 创造的对象。
+* 先 bind 后 apply 或 call 。 指向 bind 的 this。
+
+### 不在函数里
+
+* script 标签中 this 指向 window。
+* node 的模块文件中 this 指向 module 的默认导出对象。
