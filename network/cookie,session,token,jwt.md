@@ -30,7 +30,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 
 ![img](cookie,session,token,jwt.assets/37adb2019d064967923a659848870771tplv-k3u1fbpfcp-watermark.awebp)
 
-* 刷卡进大学宿舍大门。卡只存了 id，物业系统查信息，决定能不能进。
+* 剪头发办会员卡，报手机号。通过手机号查询信息。
 * session 最通常的实现方式是 cookie。
 
 ### Session 的存储方式
@@ -38,6 +38,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 * 服务端只是给 cookie 一个 sessionId。需要存具体内容。
 * Redis。
 * 内存，重启没了。
+* 数据库。性能不好。
 
 ### Session 过期和销毁
 
@@ -45,7 +46,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 
 ### Session 分布式问题
 
-* session 集中存储。用独立的 Redis。
+* session 集中存储。用独立的 Redis或数据库，把 session 存到一个库里。
 * 相同 IP 请求在负载均衡时打到一台机器上。 如 nginx 配置 ip_hash。
 * 通常用第一种，第二种不是真负载均衡，而且没有解决宕机问题。
 
@@ -53,7 +54,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 
 * session 不好维护。单独启用一套 Redis 集群。
 
-* 螃蟹券，记录几只，不需要查询。
+* 身份证有姓名有住址，不需要查询。
 
 ![img](cookie,session,token,jwt.assets/a1c57a08eb204f528256f3980c721148tplv-k3u1fbpfcp-watermark.awebp)
 
@@ -65,7 +66,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 
 * 过期时间也放进 token 内容中。
 
-### token 的编码方式
+### token 的实现方式
 
 #### base64
 
@@ -81,7 +82,7 @@ Set-Cookie: weight=80; domain=me.tim.com
 ### Refresh Token
 
 * 用于鉴权的 Token，称为 access token。敏感业务需要有效期足够短。用来专门生成 access token 的 token，称为 refresh token。
-* access token 有效期设置短一些，refresh token 有效期设置长一些。refresh token 也可能是如 session 一样处理。
+* access token 有效期设置短一些，refresh token 有效期设置长一些。refresh token 也可能是如 session 一样处理，通过独立服务增加安全性。
 
 ![img](cookie,session,token,jwt.assets/b764b256211b4ea182388fd92674fe70tplv-k3u1fbpfcp-watermark.awebp)
 
