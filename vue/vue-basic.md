@@ -1,4 +1,4 @@
-# Vue Basic
+#  Vue Basic
 
 ## 语法
 
@@ -66,10 +66,15 @@
 ### v-for
 
 * 可以遍历对象。遍历对象时三个参数，值，键，索引。
-* 与 key 连用。
+* 与 key 连用。不使用 key,数据顺序改变，不移动 dom,就地更新。不给 key 就是这种默认行为。**key 要用字符串或数值类型** 。
 * 数组更新检测。`push pop shift unshift splice sort reverse`。
 * 显示过滤排序后的结果。使用计算属性。
 * `v-for` 循环计算属性不适用，可以用方法。
+
+     ```javascript
+     <li v-for="n in even(set)">{{ n }}</li>
+     ```
+
 * `v-for` 优先级比 `v-if` 更高。想渲染部分节点，十分有用。
 
 ### 事件
@@ -89,6 +94,8 @@
     * text 和 textarea 中 `value` 属性 `input` 事件。
     * checkbox 和 radio 中 `checked` 属性和 `change` 事件。
     * select 中 `value` 属性 `change` 事件。
+* `v-model` 不会再输入法组合文字时更新，input 事件会。
+* `v-model` 表达式的初始值未能匹配任何选项，select 元素会处于未选中状态。ios 下用户无法选择第一个选项，推荐提供一个值为空的禁用选项。
 
 #### 值绑定
 
@@ -105,11 +112,11 @@
 <!-- 选中时 vm.pick === vm.a -->
 ```
 
-#### 修饰符
+#### 修饰符 v-model
 
 * `.trim`、`.lazy`、`.number` 修饰符
 
-### 组件基础 
+### 组件基础
 
 #### 通过 Prop 向子组件传递数据
 
