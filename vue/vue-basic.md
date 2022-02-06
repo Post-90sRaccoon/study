@@ -69,7 +69,7 @@
 * 与 key 连用。不使用 key,数据顺序改变，不移动 dom,就地更新。不给 key 就是这种默认行为。**key 要用字符串或数值类型** 。
 * 数组更新检测。`push pop shift unshift splice sort reverse`。
 * 显示过滤排序后的结果。使用计算属性。
-* `v-for` 循环计算属性不适用，可以用方法。
+* `v-for` 里可以用方法。
 
      ```javascript
      <li v-for="n in even(set)">{{ n }}</li>
@@ -121,6 +121,23 @@
 #### 通过 Prop 向子组件传递数据
 
 * `props` 传递，使用 `v-bind` 动态传递 `props`。
+* 可以 `v-bind="obj` 传入一个对象的所有 property。
+* 单向数据流，不应该改变子组件的 prop。对象和数组是引用传入，子组件中更改，会影响父组件状态。
+* 对象或数组默认值必须从一个工厂函数获取。
+
+```javascript
+propE: {
+  type: Object,
+  default: function () {
+    return { message: 'hello' }
+  }
+}
+```
+
+* prop 会在实例创建之前验证，所以实例在 default 和 validator 中无法访问。
+* type 可以是自定义构造函数。
+* 非 prop 的 attribute 会被添加到子组件根元素上。
+* 禁用 attribute 继承(不会影响 style 和 class 的绑定)，使用实例的 `$attrs`。 
 
 #### 自定义事件
 
@@ -129,8 +146,18 @@
 
 #### 自定义组件使用 `v-model`
 
+* model 选项
+
+```javascript
+model: {
+ prop: 'checked',
+ event: 'change'
+},
+```
+
 ```html
-<input v-model="searchText">
+<input v-model="search
+                Text">
 <!-- 相当于 -->
 <input
   v-bind:value="searchText"
@@ -160,6 +187,73 @@ Vue.component('custom-input', {
  </script>
 ```
 
+#### 自定义组件的根元素绑定原生事件
+
+* 使用`.native` 修饰符。
+* `$listeners` 类似`$attrs`
+
+### .sync 修饰符
+
+* 对一个 prop 双向绑定，无法真正双向绑定。以 update:ppropName 的方法取而代之。
+
+```html
+this.$emit('update:title', newTitle)
+
+<text-document
+  v-bind:title="doc.title"
+  v-on:update:title="doc.title = $event"
+></text-document>
+
+<!-- 等价于 -->
+<text-document v-bind:title.sync="doc.title"></text-document>
+```
+
+* 使用 `.sync` 不能用表达式，类似 v-model。
+
+### .sync 和 v-model
+
+* v-model 一个组件上只能有一个。.sync 可以用多个。
+* 作用
+    * `v-model="a"`  `<comp :value="a" @input="a=$event"></comp>`
+    * `:title.sync="a"` `<comp :title="a" @update:title="a=$event"></comp>`
+
+### 插槽
+
+#### 编译作用域
+
+* 插槽访问他写的位置的作用域，而不是插入的子组件的作用域。父级模板里的所有内容都是在父级作用域中编译的；子模板里的所有内容都是在子作用域中编译的.
+
+#### 后备内容
+
+```html
+<slot>a</slot>
+```
+
+* 默认是 a , 用内容内容替换 a。
+
+#### 具名插槽
+
+* 多个插槽，通过 slot 的 attribute `name` 来区分。
+* 向具名插槽提供内容通过 template 的 `v-slot:name`,不符合此条件的都插入到默认插槽中。
+
+#### 作用域插槽
+
+* 让插槽内容能够访问子组件的数据。
+* 为了让数据在父级插槽可用，使用 slot 的 `v-bind:data="value"`。
+* 父级的 template 使用`v-slot:name="slotProps"` `slotProps.data`。
+* v-slot 只能在 template 上添加。除非被提供的内容只有默认插槽时，可以添加在组件上。
+* 可以解构 slotProps `v-slot:name={ data: person }`。包括赋默认值。
+
+#### 动态插槽名
+
+* 同动态参数名 `v-slot:[name]`
+
+#### 具名插槽缩写
+
+* 父级 template `#name`，`#name={ user }`。
+
+###  动态组件和异步组件
+
 #### 动态组件
 
 * 通过 `<component>` 元素和 `is` attribute 实现。
@@ -168,4 +262,62 @@ Vue.component('custom-input', {
 <component v-bind:is="currentTabComponent"></component>
 ```
 
-* `is` 可以作用于 `html` 元素。 但这些元素将被视为组件，这意味着所有 attribute 都会作为 DOM attribute 绑定。对于像 value 这样的属性，需要使用 `.prop` 修饰器。
+* `is` 可以作用于 `html` 元素。 但这些元素将被视为组件，这意味着所有 attribute 都会作为 DOM attribute 绑定。对于像 value 这样的 property，需要使用 `.prop` 修饰器。
+* keep-alive 需要组件有自己的名字组件的 name。
+
+#### 异步组件
+
+```javascript
+Vue.component('async-example', function (resolve, reject) {
+  setTimeout(function () {
+    // 向 `resolve` 回调传递组件定义
+    resolve({
+      template: '<div>I am async!</div>'
+    })
+  }, 1000)
+})
+```
+
+* 与 webpack 的 code-splitting 功能配合使用
+
+```javascript
+Vue.component('async-webpack-example', function (resolve) {
+  // 这个特殊的 `require` 语法将会告诉 webpack
+  // 自动将你的构建代码切割成多个包，这些包
+  // 会通过 Ajax 请求加载
+  require(['./my-async-component'], resolve)
+})
+```
+
+* 也可以工厂函数返回一个 promise
+
+```javascript
+Vue.component(
+  'async-webpack-example',
+  // 这个动态导入会返回一个 `Promise` 对象。
+  () => import('./my-async-component')
+)
+```
+
+* 局部注册时，直接提供一个返回  Promise 的函数
+
+```javascript
+new Vue({
+  // ...
+  components: {
+    'my-component': () => import('./my-async-component')
+  }
+})
+```
+
+##### 异步组件处理加载状态
+
+* 异步组件工厂函数返回一个对象，有相应配置项，详见文档。
+
+#### 处理边界情况
+
+##### 访问元素 & 组件
+
+* 子组件可以通过 this.$root 访问根实例。
+* 子组件通过 this.$parent 访问父级组件实例。
+* 使用 `ref` 访问子组件或者子元素。通过 `this.$refs.xx` 访问。**`$refs` 组件渲染后生效，不是响应式。**
