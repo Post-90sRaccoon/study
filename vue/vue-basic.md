@@ -318,6 +318,53 @@ new Vue({
 
 ##### 访问元素 & 组件
 
-* 子组件可以通过 this.$root 访问根实例。
-* 子组件通过 this.$parent 访问父级组件实例。
+* 子组件可以通过 `this.$root` 访问根实例。
+* 子组件通过 `this.$parent` 访问父级组件实例。
 * 使用 `ref` 访问子组件或者子元素。通过 `this.$refs.xx` 访问。**`$refs` 组件渲染后生效，不是响应式。**
+* 依赖注入(非响应式的)，嵌套层级深子组件无法通过 `this.$parent` 访问，也不需要暴露整个父级实例。
+
+```html
+<google-map>
+  <google-map-region>
+    <google-map-markers></google-map-markers>
+  </google-map-region>
+</google-map>
+```
+
+* google-map 
+
+```javascript
+provide: function () {
+  return {
+    getMap: this.getMap
+  }
+}
+```
+
+* 后代组件
+
+```javascript
+inject: ['getMap']
+```
+
+##### 程序化的事件监听器
+
+* `$on`,`$once`,`$off`。
+
+```javascript
+mounted: function () {
+  var picker = new Pikaday({
+    field: this.$refs.input,
+    format: 'YYYY-MM-DD'
+  })
+
+  this.$once('hook:beforeDestroy', function () {
+    picker.destroy()
+  })
+}
+// 这样不需要把 picker 挂载到实例上。
+```
+
+##### 递归组件
+
+* 不能无限递归，要用终止条件，如最后得到一个 false 的 `v-if`。
