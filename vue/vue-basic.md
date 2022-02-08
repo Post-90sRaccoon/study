@@ -9,6 +9,8 @@
 // 插值处不会更新
 ```
 
+* 除非非常留意渲染变慢了，不然完全没有必要。
+
 ### 模板表达式
 
 * 可以用 js 表达式，但只能单个表达式。
@@ -368,3 +370,36 @@ mounted: function () {
 ##### 递归组件
 
 * 不能无限递归，要用终止条件，如最后得到一个 false 的 `v-if`。
+
+##### 组件间的循环引用
+
+* 全局注册可以。
+
+* 使用模块系统时，产生悖论的子组件是 `tree-folder-contents`。
+
+    * beforeCreate 时去注册他
+
+        ```javascript
+        beforeCreate: function () {
+          this.$options.components.TreeFolderContents = require('./tree-folder-contents.vue').default
+        }
+        ```
+
+    * 使用 webpack 异步 import
+
+    ```javascript
+    components: {
+      TreeFolderContents: () => import('./tree-folder-contents.vue')
+    }
+    ```
+
+##### 模板定义的替代品
+
+* 内联模板。
+* X-Template。
+
+##### 控制更新
+
+* 强制更新。`$forceUpdate`。
+
+​    
