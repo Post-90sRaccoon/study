@@ -210,7 +210,7 @@ this.$emit('update:title', newTitle)
 <text-document v-bind:title.sync="doc.title"></text-document>
 ```
 
-* 使用 `.sync` 不能用表达式，类似 v-model。
+* 使用 `.sync` 不能用表达式，类似 v-model。 
 
 ### .sync 和 v-model
 
@@ -273,7 +273,8 @@ this.$emit('update:title', newTitle)
 Vue.component('async-example', function (resolve, reject) {
   setTimeout(function () {
     // 向 `resolve` 回调传递组件定义
-    resolve({
+    resolve(
+      {
       template: '<div>I am async!</div>'
     })
   }, 1000)
@@ -402,4 +403,66 @@ mounted: function () {
 
 * 强制更新。`$forceUpdate`。
 
-​    
+#### 混入
+
+* 一个混入对象包含任意组件 option。
+
+```javascript
+const myMixin = {}
+const Component = Vue.extend({ mixins: [myMixin] })
+```
+
+* 冲突时组件数据优先。
+* 钩子函数合并为数组都调用，混入对象的钩子在自身钩子前调用。
+* 值为对象，合并为一个对象。
+* 可以自定义选项合并策略。
+
+#### 自定义指令
+
+* 局部注册 `directives:`
+
+```javascript
+// v-focus
+Vue.directive('focus', {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    el.focus()
+  }
+})
+```
+
+##### 钩子函数
+
+* `bind` 指令第一次绑定到元素时调用。一次性的初始化设置。
+* `inserted` 被绑定元素插入父节点时调用。 (仅保证父节点存在，但不一定已被插入文档中)
+* `updated` 所有组件的 VNode 更新时调用，也可能是发生在更新之前。
+* `componentUpdated` 指令所在组件的 VNode 及其子 VNode 全部更新后调用。
+* `unbind` 只调用一次，指令与元素解绑时调用。
+
+##### 参数
+
+* `el`: 绑定元素，可操作 DOM。
+* `binding` 一个对象
+    * `name` 指令名
+    * `value` 指令的绑定值 `v-xx=1`
+    * `oldvalue` 指令绑定的前一个值
+    * `expression` 字符串形式的的指令表达式 `v-xx=“'1+1'”`
+    * `arg` 传给执行的参数。`v-xx:foo`
+    * `modifiers` 执行修饰符，一个对象。
+* `VNode` Vue 编译的虚拟节点
+* `oldVnode` 上一个虚拟节点
+* 除了 `el` ，其他参数是只读的，钩子共享数据可以通过 dataset。
+
+##### 动态指令参数
+
+* `v-xx:[argument]="value"`
+
+##### 函数简写
+
+* `bind` 和 `update` 触发相同行为，直接写 function 即可.
+
+##### 对象字面量
+
+* 如果指令需要多个值，可以传入 JavaScript 对象字面量。`v-xx="{a:"1“,b:"2"}"`
+
+#### 渲染函数和 JSX
