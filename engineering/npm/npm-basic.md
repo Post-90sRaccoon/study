@@ -148,3 +148,62 @@ exports.functiona = function() { console.log('function a') };
 
 * `dependencies`  生产环境需要的依赖
 * `devDependencies` 仅仅本地环境需要的
+
+```bash
+npm install --save-prod
+npm install --save-dev
+```
+
+### 语义控制版本
+
+* 第一次发布 `1.0.0`
+* 向后兼容的 bug 修复 `1.0.1`
+* 向后兼容的新特性 `1.1.0`
+* 破坏向后兼容的修改 `2.0.0`
+
+#### 规则符号
+
+* `^` ：只会执行不更改最左边非零数字的更新。
+* `~` :  只会执行补丁版本。~0.13.0 可以更新到 0.13.1，不能更新的 0.14.0。
+* `>`: 接收高于指定版本的任何版本。``>=` 高于等于
+* `<` : 低于 `<=` 低于等于  `=` 等于
+* `-`:  2.1.0 - 2.6.2 范围
+* `||`: 组合。`1.0.0 || >=1.1.0 <1.2.0`，即使用 1.0.0 或从 1.1.0 开始但低于 1.2.0 的版本。
+* 无符号任意版本，`latest` 使用最新版本。
+
+### 加 tag 来区分版本
+
+```bash
+npm publish --tag <tag>
+npm dist-tag add <package-name>@<version> [<tag>]
+```
+
+### 下载包
+
+```bash
+npm install <package_name> 
+npm install @scope/package-name
+npm install <package_name>@<tag>
+```
+
+* 如果没有 `node_modules` 会创建并在里面下载。
+* 如果没有 `package.json` 会下载最新版本。
+* 全局下载加 `-g`
+
+### 更新包
+
+```bash
+npm update // 更新所有，也可以指定包
+npm outdated // test 
+npm install npm@latest -g  // 全局的包更新
+npm outdated -g --depth=0 // 查看全局哪些包需要更新
+```
+
+### 卸载包
+
+```bash
+npm uninstall <package_name>  // 从 node_modules 删除
+npm uninstall --save lodash // 从 package.json 删除
+// 全局卸载加 -g
+```
+
