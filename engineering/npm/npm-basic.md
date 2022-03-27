@@ -245,6 +245,21 @@ npm uninstall --save lodash // 从 package.json 删除
 * `package-lock.json` 在执行 npm i 的时候生成，用来记录实际安装的 npm 包的来源和版本。可以锁定安装时的包的版本，需要上传到 git，确保大家使用的包版本一致。
 * 安装前自动清除现存的 `node_moduels`。
 
+### npm config
+
+```bash
+npm config set key=value
+npm config get key
+npm config get disturl registry
+npm config list // -l 默认值也展示 --json json形式展示
+npm delete key
+npm config edit // --global 
+```
+
+#### npm dedupe
+
+* 优化依赖树结构去除重复。
+
 #### npm outdated
 
 * 列出所有没有升级到最新版本的项目依赖。红色可以无脑升级，`npm update` 会一次性升级所有红色依赖。

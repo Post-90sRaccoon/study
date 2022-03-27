@@ -32,3 +32,75 @@ msg = 1 //报错
 #### 降级编译
 
 * 通过修改 `tsconfig.json` 里的 `target` 为 `es5`
+
+#### 严格模式
+
+```json
+"strict": true,
+// 等价于下面两个
+"noImplicitAny": true,
+"strictNullChecks": true,
+```
+
+#### 常用类型
+
+```json
+"rootDir": "./src",
+"outDir": "./dist",
+```
+
+```typescript
+let arr: number[] = [1,2,3]
+let arr: Array<number> = [1,2,3]
+```
+
+##### any：用于不希望某个特定值导致类型检查错误
+
+```typescript
+function greet(name: string): void {
+  console.log("Hello," + name)
+}
+
+// TS 如果明确的知道匿名函数如何调用，可以推断出参数类型 上下文类型
+const names = ['a','b','c']
+names.forEach((s) => console.log(s.toUpperCase()))
+```
+
+#### 对象类型
+
+```typescript
+function printCoord(pt: { x: number, y: number }) {
+   // 函数不指明返回类型会根据返回值自动推断
+}
+
+function printName(obj: { first: string, last?: string }) {
+  // last 是可选的 不能传额外属性
+  console.log(obj.last?.toUpperCase());
+}
+```
+
+#### 联合类型
+
+```typescript
+function printId(id: number | string) {
+  if (typeof id === 'string') {
+     console.log(id.toUpperCase()) 
+  }
+}
+```
+
+#### 类型别名
+
+```typescript
+type Point = {
+  x: number,
+  y: number
+}
+
+function prointCoord(pt: Point) {}
+
+type ID = number |
+```
+
+
+
