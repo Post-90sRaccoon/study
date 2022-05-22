@@ -8,7 +8,7 @@
 ### 配置
 
 * Domain 属性指定哪些域名要带 Cookie。没指定默认设为当前 URL 的一级域名。如果 Set-Cookie 设置的域名不属于当前域名，浏览器会拒绝这个 Cookie。
-* Path 属性执行浏览器请求哪些路径会附带这个 Cookie。
+* Path 属性指定浏览器请求哪些路径会附带这个 Cookie。
 * Expires 执行到期时间。 UTC 格式。没指定只在当前会话有效，关闭窗口 Cookie 失效。
 * Max-Age: 指定 Cookie 从现在开始存在的秒。 Max-Age 优先级高于 Expires.
 * Secure 只有 HTTPS 才发 Cookie。HTTP 指定无效。

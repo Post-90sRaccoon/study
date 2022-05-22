@@ -31,6 +31,7 @@ npm install --save-dev @babel/core @babel/cli @babel/preset-env
 #### Core Library
 
 * Babel 的核心功能在 `@babel/core` 中。 
+* 抽象成 AST 树。将插件转义好的内容生成 JS 代码。
 
 ```javascript
 const babel = require("@babel/core");
@@ -55,6 +56,8 @@ npm install --save-dev @babel/preset-env
 
 ./node_modules/.bin/babel src --out-dir lib --presets=@babel/env
 ```
+
+* 先执行插件，在执行预设。插件按声明顺序执行，预设逆序执行。
 
 #### 配置
 
@@ -86,5 +89,54 @@ import "regenerator-runtime/runtime";
     ]
   ]
 }
+```
+
+#### 配置 Babel
+
+* `babel.config.json` ：使用 monorepo (一个项目多个子包，多个 package.json，自爆间存在相互依赖)或想要编译 `node_modules`。
+* `.babelrc.json`： 编译某个文件或某目录的子集。别名`.babelrc`。[详情](https://zhuanlan.zhihu.com/p/367724302)
+* 也可以在 `package.json` 中的  `babel` 字段中配置。
+* 可以使用  JS 写配置文件，可以使用 Node.js APIS。
+
+#### 打印生效配置
+
+```shell
+BABEL_SHOW_CONFIG_FOR=${PATH} npm start
+```
+
+* 升序优先级打印。
+
+#### 配置项合并
+
+* 一般不是 `undefined` 会直接替换。
+
+* `assumptions` , `parserOpts`,`generatorOpts` 是合并不是替换。
+
+* 对于 `plugins` 和 `presets` 
+
+    ```javascript
+    plugins: [
+      './other',
+      ['./plug', { thing: true, field1: true }]
+    ],
+    overrides: [{
+      plugins: [
+        ['./plug', { thing: false, field2: true }],
+      ]
+    }]
+    // merge 
+    plugins: [
+      './other',
+      ['./plug', { thing: false, field2: true }],
+    ],
+    ```
+
+* 对于两个同样插件，如果不想后面的覆盖前面的，需要给两个不同的名字。
+
+```javascript
+plugins: [
+  ["./plug", { one: true }, "first-instance-name"],
+  ["./plug", { two: true }, "second-instance-name"],
+];
 ```
 
