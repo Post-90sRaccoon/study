@@ -99,8 +99,51 @@ type Point = {
 
 function prointCoord(pt: Point) {}
 
-type ID = number |
+type ID = number | string
 ```
 
+#### 接口
 
+```typescript
+interface Point {
+  x: number;
+  y: number;
+}
+
+// 扩展接口
+interface Animal {
+  name: string
+}
+
+interface Bear extends Animal {
+  honey: boolean  
+}
+
+// 类型别名的拓展
+type Animal = {
+  name: string
+}
+
+type Bear = Animal & {
+  honey: boolean
+}
+
+// 现有类型添加字段
+interface MyWindow {
+  count: number
+}
+interface MyWindow {
+  title: string
+}
+```
+
+#### 类型断言
+
+```typescript
+const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement
+const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas")
+
+const x = 'hello' as number // 不可以
+const x = ('hello' as unknown) 
+```
 
