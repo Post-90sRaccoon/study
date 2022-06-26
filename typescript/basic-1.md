@@ -37,7 +37,6 @@ msg = 1 //报错
 
 ```json
 "strict": true,
-// 等价于下面两个
 "noImplicitAny": true,
 "strictNullChecks": true,
 ```
@@ -56,19 +55,17 @@ let arr: Array<number> = [1,2,3]
 
 ##### any：用于不希望某个特定值导致类型检查错误
 
+* 如何调用 any 类型的值都不会报错。
+
+#### 函数类型
+
+* 会检查参数数量。
+
 ```typescript
 function greet(name: string): void {
   console.log("Hello," + name)
 }
 
-// TS 如果明确的知道匿名函数如何调用，可以推断出参数类型 上下文类型
-const names = ['a','b','c']
-names.forEach((s) => console.log(s.toUpperCase()))
-```
-
-#### 对象类型
-
-```typescript
 function printCoord(pt: { x: number, y: number }) {
    // 函数不指明返回类型会根据返回值自动推断
 }
@@ -77,9 +74,21 @@ function printName(obj: { first: string, last?: string }) {
   // last 是可选的 不能传额外属性
   console.log(obj.last?.toUpperCase());
 }
+
+// 匿名函数
+// TS 如果明确的知道匿名函数如何调用，可以推断出参数类型 上下文类型
+const names = ['a','b','c']
+names.forEach((s) => console.log(s.toUpperCase()))
 ```
 
+#### 对象类型
+
+* 属性不指定类型，会被认定为 any。
+* 对象类型可指定属性是可选的。
+
 #### 联合类型
+
+* 联合类型的值不能调用仅仅其中一种类型的值能调用的东西，可以做个判断。
 
 ```typescript
 function printId(id: number | string) {
@@ -100,9 +109,17 @@ type Point = {
 function prointCoord(pt: Point) {}
 
 type ID = number | string
+
+type WrapperString = string
+let str: WrapperString = 'a'
+// 类型别名等价，不会报错 'a' 不是 wrapperString
 ```
 
 #### 接口
+
+* 命名对象类型，只能定义形状，不能重命名原始类型(`interface X extends string`)。
+* 同别名，类型结构对了即可。
+* 几乎所有接口的特性别名都支持。区别接口可添加属性。
 
 ```typescript
 interface Point {
@@ -128,7 +145,7 @@ type Bear = Animal & {
   honey: boolean
 }
 
-// 现有类型添加字段
+// 现有类型添加字段 别名不行
 interface MyWindow {
   count: number
 }
@@ -139,11 +156,100 @@ interface MyWindow {
 
 #### 类型断言
 
+*  TS 有时无法知道值的信息。
+* 使用 ` document.getElementById`, ts 只知道返回某种 `HTMLElement`。我们知道这个 ID 只会返回 Canvas。 
+* 编译时删除，所以不存在与类型断言相关联的运行时检查。如果类型断言错误，就不会产生异常或null。
+* 类型断言只能为更具体或更不具体的类型，不能是不包含的类型。
+
 ```typescript
 const myCanvas = document.getElementById("main_canvas") as HTMLCanvasElement
 const myCanvas = <HTMLCanvasElement>document.getElementById("main_canvas")
-
+// 尖括号语法代价，tsx 文件中除外。
 const x = 'hello' as number // 不可以
-const x = ('hello' as unknown) 
+const x = ('hello' as unknown) as number
 ```
 
+#### 文字类型
+
+* 可以指定更具体的类型
+
+```typescript
+let x: "hello" = "hello"
+x = "hello"
+x = "hi"
+// 类似于const
+```
+
+* 组合使用
+
+```typescript
+// 一个函数的参数只有接收某几个特定值
+function printText(s: string, alignment: "left" | "right" | "center") {}
+
+function compare(a: string, b: string): -1 | 0 | 1 {
+  return a === b ? 0 : a > b ? 1 : -1;
+}
+
+let bool: true | false = true
+```
+
+#### 文字推理
+
+* 用对象初始化变量， ts 会认为对象的值可能变化。
+
+```typescript
+function handleRequest(url: string, method: 'GET' | 'POST'):void {
+  console.log(url, method)
+}
+
+const req = { url: "https://example.com", method: "GET" };
+handleRequest(req.url, req.method);
+// Argument of type 'string' is not assignable to parameter of type '"GET" | "POST"'.
+// 因为调用 handle 前 req.method 可能会被赋值为任意字符串
+```
+
+```typescript
+const req = { url: "https://example.com", method: "GET" as "GET" }
+// 禁止接受其他值 或者
+req.method = '123'
+handleRequest(req.url, req.method as “GET”);
+// 代表我因一些原因知道 req.method 是 GET 类型，即使不是也不会报错。
+```
+
+```typescript
+const req = { url: "https://example.com", method: "GET" } as const;
+// 将整个对象转换为 type literal 
+// 变成只读
+```
+
+#### null 和 undefined
+
+* 当 `strictNullChecks` 关闭时。null 和 undefined 可赋值给任何类型。
+* 开启时，要做检查。
+
+```typescript
+function doSomething(x: string | null) {
+  if (x === null) {
+    // do nothing
+  } else {
+    console.log("Hello, " + x.toUpperCase());
+  }
+}
+```
+
+### Non-null Assertion Operator
+
+```typescript
+function liveDangerously(x?: number | null) {
+  // No error
+  console.log(x!.toFixed());
+}
+// 后缀 ！ 移除 null 和 undefined
+```
+
+* 和类型断言一样，不改变运行时行为。知道不可能是 null 或 undefined 时使用。
+
+#### 其他原始类型
+
+* bigint
+* symbol
