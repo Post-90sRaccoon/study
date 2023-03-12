@@ -1,0 +1,61 @@
+# DOM
+
+[TOC]
+
+D (document) 文档。
+
+O 对象。window 对象对应浏览器窗口，这个对象的属性和方法称为 BOM (浏览器对象模型)。
+
+M model 模型。DOM 把文档表示为一棵树。
+
+## 结点
+
+### 元素节点
+
+DOM 的原子是元素节点 element node。
+
+### 文本结点 
+
+文本结点总是包含在元素节点内部。
+
+### 属性结点
+
+属性结点描述元素节点。
+
+### 获取元素
+
+#### getElementById
+
+#### getElementsByTagName
+
+返回数组。可以接受通配符做参数，可以统计有多少元素节点。
+
+```javascript
+// 组合使用
+const shopping = document.getElementById('purchases');
+const item = shopping.getElementsByTagName('*');
+```
+
+#### getElementsByClassName
+
+```javascript
+document.getElementsByClassName('important sale')
+// 同时有两个类名的元素
+```
+
+## 获取和设置属性
+
+### getAttribute
+
+不属于 `document` 对象，只能通过元素节点调用。如果没有这个属性，返回 `null`。
+
+### setAttribute
+
+只能元素节点调用。
+
+通过这个方法改变属性值，浏览器查看源代码没有修改。因为 DOM 先加载静态内容，再动态刷新，动态刷新不影响静态文档内容。对页面内容刷新不需要在浏览器刷新页面。
+
+
+
+
+
