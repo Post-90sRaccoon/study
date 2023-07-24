@@ -27,3 +27,9 @@
 * `NodeList` 是一个类数组对象，它表示 `DOM` 中的一组节点集合，通常是由查询 `DOM` 元素的方法（例如`querySelectorAll()`）返回的结果。
 * `NodeList` 对象类似于数组，它包含了一组有序的节点，但它不是数组，没有数组的方法（如`map()`、`forEach()`等），但可以通过索引来访问其中的元素。
 * `NodeList` 对象是动态的，也就是说当 `DOM` 结构发生变化时，`NodeList` 会自动更新。
+
+
+
+[Node 与 Element](https://zhuanlan.zhihu.com/p/165422508)
+
+[Node 与 Element](https://juejin.cn/post/7066778860024496165)
