@@ -20,6 +20,8 @@
 
 ## CommonJS
 
+* 模块同步加载并执行模块文件，拷贝一份值出来。
+
 ### CommonJS 的使用
 
 * 在 `commonjs` 中每一个 js 文件都是一个单独的模块，称为 module。
@@ -86,7 +88,7 @@ const _ =  require('lodash')   // 第三方自定义模块
 
 * 优先找缓存=>内置模块=>文件模块=>自定义模块
 
-![image-20221011212450399](ES%20Module%20and%20Commonjs.assets/image-20221011212450399.png)
+![4.jpg](ES%20Module%20and%20Commonjs.assets/cfb7a91998774fc78a9813e3b0db8199tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp)
 
 ### require 模块引入与处理
 
